@@ -8,7 +8,6 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
-        // реализуйте алгоритм здесь
         UserService userService = new UserServiceImpl();
         userService.createUsersTable();
         userService.saveUser("Nataly", "Miney", (byte) 23);

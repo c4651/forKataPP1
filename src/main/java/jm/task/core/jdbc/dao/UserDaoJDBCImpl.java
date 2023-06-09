@@ -18,10 +18,8 @@ public class UserDaoJDBCImpl implements UserDao {
     public void createUsersTable() {
         try {
             Connection connection = Util.getMySQLConnection();
-            //System.out.println("Connection installed");
             try (Statement statement = connection.createStatement()) {
                 {
-                    //statement.executeUpdate("drop table User");
                     statement.executeUpdate("CREATE TABLE if not exists User (" +
                             "id bigint not null auto_increment," +
                             "name VARCHAR(30) not null," +
@@ -29,7 +27,6 @@ public class UserDaoJDBCImpl implements UserDao {
                             "age tinyint," +
                             "PRIMARY KEY(id)" +
                             ")");
-                    //System.out.println("Table created");
                 }
             }
             connection.close();
@@ -41,10 +38,9 @@ public class UserDaoJDBCImpl implements UserDao {
     public void dropUsersTable() {
         try {
             Connection connection = Util.getMySQLConnection();
-            //System.out.println("Connection installed");
             try (Statement statement = connection.createStatement()) {
                 {
-                        statement.executeUpdate("DROP TABLE if exists User");
+                    statement.executeUpdate("DROP TABLE if exists User");
                 }
             }
             connection.close();
@@ -56,11 +52,10 @@ public class UserDaoJDBCImpl implements UserDao {
     public void saveUser(String name, String lastName, byte age) {
         try {
             Connection connection = Util.getMySQLConnection();
-            //System.out.println("Connection installed");
             try (Statement statement = connection.createStatement()) {
                 {
                     statement.executeUpdate("INSERT INTO User set name = \"" + name +
-                            "\", lastName = \"" +lastName +
+                            "\", lastName = \"" + lastName +
                             "\", age = " + age);
                 }
             }
@@ -73,7 +68,6 @@ public class UserDaoJDBCImpl implements UserDao {
     public void removeUserById(long id) {
         try {
             Connection connection = Util.getMySQLConnection();
-            //System.out.println("Connection installed");
             try (Statement statement = connection.createStatement()) {
                 {
                     statement.executeUpdate("DELETE FROM User WHERE id = " + id);
@@ -89,12 +83,11 @@ public class UserDaoJDBCImpl implements UserDao {
         List<User> allUsers = new ArrayList<>();
         try {
             Connection connection = Util.getMySQLConnection();
-            //System.out.println("Connection installed");
             try (Statement statement = connection.createStatement()) {
                 {
                     ResultSet rs = statement.executeQuery("SELECT * FROM User");
-                    while(rs.next()){
-                        allUsers.add(new User(rs.getLong(1),rs.getString(2),rs.getString(3),rs.getByte(4)));
+                    while (rs.next()) {
+                        allUsers.add(new User(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getByte(4)));
                     }
                 }
             }
@@ -108,7 +101,6 @@ public class UserDaoJDBCImpl implements UserDao {
     public void cleanUsersTable() {
         try {
             Connection connection = Util.getMySQLConnection();
-            //System.out.println("Connection installed");
             try (Statement statement = connection.createStatement()) {
                 {
                     statement.executeUpdate("TRUNCATE TABLE User");
