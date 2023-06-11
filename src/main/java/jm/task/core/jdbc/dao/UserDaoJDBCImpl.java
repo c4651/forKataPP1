@@ -18,17 +18,13 @@ public class UserDaoJDBCImpl implements UserDao {
     public void createUsersTable() {
         try {
             Connection connection = Util.getMySQLConnection();
-            try (Statement statement = connection.createStatement()) {
-                {
-                    statement.executeUpdate("CREATE TABLE if not exists User (" +
-                            "id bigint not null auto_increment," +
-                            "name VARCHAR(30) not null," +
-                            "lastName VARCHAR(30)," +
-                            "age tinyint," +
-                            "PRIMARY KEY(id)" +
-                            ")");
-                }
-            }
+            PreparedStatement statement = connection.prepareStatement("CREATE TABLE if not exists User (" +
+                    "id bigint not null auto_increment," +
+                    "name VARCHAR(30) not null," +
+                    "lastName VARCHAR(30)," +
+                    "age tinyint," +
+                    "PRIMARY KEY(id))");
+            statement.executeUpdate();
             connection.close();
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -38,11 +34,8 @@ public class UserDaoJDBCImpl implements UserDao {
     public void dropUsersTable() {
         try {
             Connection connection = Util.getMySQLConnection();
-            try (Statement statement = connection.createStatement()) {
-                {
-                    statement.executeUpdate("DROP TABLE if exists User");
-                }
-            }
+            PreparedStatement statement = connection.prepareStatement("DROP TABLE if exists User");
+            statement.executeUpdate();
             connection.close();
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -50,16 +43,15 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try {
-            Connection connection = Util.getMySQLConnection();
-            try (Statement statement = connection.createStatement()) {
-                {
-                    statement.executeUpdate("INSERT INTO User set name = \"" + name +
-                            "\", lastName = \"" + lastName +
-                            "\", age = " + age);
-                }
+        try (Connection connection = Util.getMySQLConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(
+                    "INSERT INTO User (name, lastName, age) VALUES (?, ?, ?)")) {
+                preparedStatement.setString(1, name);
+                preparedStatement.setString(2, lastName);
+                preparedStatement.setByte(3, age);
+                preparedStatement.executeUpdate();
             }
-            connection.close();
+
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -68,9 +60,9 @@ public class UserDaoJDBCImpl implements UserDao {
     public void removeUserById(long id) {
         try {
             Connection connection = Util.getMySQLConnection();
-            try (Statement statement = connection.createStatement()) {
+            try (PreparedStatement statement = connection.prepareStatement("DELETE FROM User WHERE id = ?")) {
                 {
-                    statement.executeUpdate("DELETE FROM User WHERE id = " + id);
+                    statement.setLong(1, id);
                 }
             }
             connection.close();
@@ -101,11 +93,8 @@ public class UserDaoJDBCImpl implements UserDao {
     public void cleanUsersTable() {
         try {
             Connection connection = Util.getMySQLConnection();
-            try (Statement statement = connection.createStatement()) {
-                {
-                    statement.executeUpdate("TRUNCATE TABLE User");
-                }
-            }
+            PreparedStatement statement = connection.prepareStatement("TRUNCATE TABLE User");
+            statement.executeUpdate();
             connection.close();
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
